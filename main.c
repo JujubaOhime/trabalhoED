@@ -14,6 +14,8 @@ TABM * geraarv(int t, char*nome){///gera dos dados iniciais
     FILE *fp2 = fopen("indices.dat", "wb");
     FILE *fp3 = fopen("pizzas.dat", "wb");
     if(!fp) exit(1);
+    if(!fp2) exit(1);
+    if(!fp3) exit(1);
     int aux;
     TPizza * p;
     do{
