@@ -122,7 +122,7 @@ TABM * completo(char *c, int t){///le do arquivo das arvs
   if(!a)return a;
   for(int i = 0; i<2*t; i++){
     char aux[10];
-    sprintf(aux, ">%d", i); 
+    sprintf(aux, "_%d", i); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i] = completo(str, t);
@@ -221,13 +221,13 @@ void ToArq(char*c, TABM* arv, int t){
   if(arv->filho){
   for(int j = 0; j<arv->nchaves; j++){
     char aux[10];
-    sprintf(aux, ">%d", j); 
+    sprintf(aux, "_%d", j); 
     strcpy(str, c);    
     strcat(str, aux);
     ToArq(str, arv->filho[j], t);
   }
   char aux[10];
-  sprintf(aux, ">%d", arv->nchaves); 
+  sprintf(aux, "_%d", arv->nchaves); 
   strcpy(str, c);    
   strcat(str, aux);
   ToArq(str, arv->filho[arv->nchaves], t);
@@ -269,11 +269,11 @@ TABM * abrecond(char *c, int t, int indice){
   if(i == 0){ //filho que to tentando abrir é menor que a primeira chave, abrir primeiro filho
     printf("caso1\n e menor que %d\n", a->chave[0]);
     char aux[10];
-    sprintf(aux, ">%d", i); 
+    sprintf(aux, "_%d", i); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i] = abrecond(str,t,indice);
-    sprintf(aux, ">%d", i+1); 
+    sprintf(aux, "_%d", i+1); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i+1] = openf(str,t);
@@ -281,11 +281,11 @@ TABM * abrecond(char *c, int t, int indice){
   else if(i == a->nchaves){ // maior qua a ultima chave, acessa o último filho
     printf("caso2\ne maior que %d\n", a->chave[a->nchaves-1]);
     char aux[10];
-    sprintf(aux, ">%d", i); 
+    sprintf(aux, "_%d", i); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i] =abrecond(str,t,indice);
-    sprintf(aux, ">%d", i-1); 
+    sprintf(aux, "_%d", i-1); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i-1] = openf(str,t);
@@ -293,15 +293,15 @@ TABM * abrecond(char *c, int t, int indice){
   else{ //do meio
     printf("caso3\nesta entre %d e %d\n", a->chave[i], a->chave[i-1]);
     char aux[10];
-    sprintf(aux, ">%d", i); 
+    sprintf(aux, "_%d", i); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i] = abrecond(str,t,indice);
-    sprintf(aux, ">%d", i+1); 
+    sprintf(aux, "_%d", i+1); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i+1] = openf(str,t);
-    sprintf(aux, ">%d", i-1); 
+    sprintf(aux, "_%d", i-1); 
     strcpy(str, c);    
     strcat(str, aux);
     a->filho[i-1] = openf(str,t);
