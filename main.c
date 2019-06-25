@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "TC/bm.h"
 #include <string.h>
 
@@ -313,7 +313,7 @@ TABM * abrecond(char *c, int t, int indice){
 
 //mexe no arq de índices
 //arq indices: info 1:indice da pizza info 2:ponteiro da pizza em pizza.dat info 3:is alive
-void adicaoarq(TPizza *p, int b){
+void adicaoarq(TPizza *p){
   FILE *fp2 = fopen("indices.dat", "rb+");
   if(!fp2) exit(1);
   rewind(fp2);
@@ -322,17 +322,18 @@ void adicaoarq(TPizza *p, int b){
   int indices[3];
   int controle = 1;
   indices[0] = -1; indices[1] = -1;indices[2] = -1;
-  if(!b){
-    while(indices[0] != p->cod)fread(indices, sizeof(int), 3, fp2);
-    fseek(fp3, indices[1], SEEK_SET);
-    salva_pizza(p, fp3);
-  }
-  if(b){
     while(indices[0]< p->cod && controle>0)controle = fread(indices, sizeof(int), 3, fp2);
+    if(indices[0] == p->cod){
+      fseek(fp3, indices[1], SEEK_SET);
+      salva_pizza(p, fp3);
+      fclose(fp2);
+      fclose(fp3);
+      return;
+    }
     int indicesaux[3];
     fseek(fp3, 0, SEEK_END);
     indicesaux[0] = p->cod; indicesaux[1] = ftell(fp3); indicesaux[2] = 1;
-    fwrite(p, tamanho_pizza_bytes(),1, fp3);
+    salva_pizza(p, fp3);
     fseek(fp2, -3*sizeof(int), SEEK_CUR);
     fwrite(indicesaux, sizeof(int), 3, fp2);
     indicesaux[0] = indices[0]; indicesaux[1] = indices[1]; indicesaux[2] = indices[2];
@@ -342,7 +343,6 @@ void adicaoarq(TPizza *p, int b){
       fwrite(indicesaux, sizeof(int), 3, fp2);
       if(controle == 3){indicesaux[0] = indices[0]; indicesaux[1] = indices[1]; indicesaux[2] = indices[2];}
     }
-  }
   fclose(fp2);
   fclose(fp3);
 }
@@ -372,14 +372,14 @@ void adicao(int t, TPizza *p){
    printf("\n\n\n");
 
    if(busca(T, p->cod)){
-     adicaoarq(p, 0);
+     adicaoarq(p);
      libera(T);
      return;
    }
    T = insere(T, p, t);
    imprime(T, 0);
    ToArq(NULL, T, t);
-   adicaoarq(p, 1);
+   adicaoarq(p);
    libera(T);
 
 }
@@ -419,14 +419,16 @@ void imprimearq(){
 
 
 int main(void) {
-  TABM *T = geraarvarq(2);
+  TABM *T = geraarv(2, NULL);
   imprimearq();
   imprime(T,0);
   ToArq(NULL, T, 2);
   TPizza *p = pizza(9,"????? tchau", "salgada", 10.0);
   adicao(2, p);
+  system ("pause");
   p = pizza(134,"????? meio daskjldha", "salgada", 10.0);
   adicao(2, p);
+  system ("pause");
   //entrada
   //inserções dando erro no preço
   //le_pizza() salva_pizza()
@@ -445,10 +447,11 @@ int main(void) {
 
 
   printf("\nacabou");
-
+  system ("pause");
 
   return 0;
 }
+
 
 
 
