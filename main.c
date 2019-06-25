@@ -423,16 +423,39 @@ int main(void) {
   imprimearq();
   imprime(T,0);
   ToArq(NULL, T, 2);
-  TPizza *p = pizza(9,"????? tchau", "salgada", 10.0);
-  adicao(2, p);
-  p = pizza(134,"????? meio daskjldha", "salgada", 10.0);
-  adicao(2, p);
+  
+  while(1){
+    char aux[3];
+    printf("Deseja adicionar alguma pizza?(s/n) \n");
+    scanf(" %s", aux);
+    if(strcmp(aux, "n") == 0) break;
+    char nome[50];
+    char tipo[20];
+    int cod;
+    float preco;
+    printf("Qual o nome da pizza?\n");
+    scanf(" %10[0-9a-zA-Z ]", nome);
+    printf("Qual o tipo da pizza?\n");
+    scanf(" %10[0-9a-zA-Z ]", tipo);
+    printf("Escreva seu preco\n");
+    scanf(" %f",&preco);
+    printf("Escreva o código da pizza \n");
+    scanf(" %d",&cod);
+    TPizza *p = pizza(cod,nome,tipo,preco);
+    adicao(2, p);
+  }
+  //TPizza *p = pizza(9,"????? tchau", "salgada", 10.0);
+  //adicao(2, p);
+  //p = pizza(134,"????? meio daskjldha", "salgada", 10.0);
+  //adicao(2, p);
+  //p = pizza(150,"????? oi", "salgada", 10.0);
+  //adicao(2, p);
   //entrada
   //inserções dando erro no preço
   //le_pizza() salva_pizza()
   //fread(blablalbal tamanho_pizza() blbalbal) tentar trocar pra le_pizza();
-  p = pizza(150,"????? oi", "salgada", 10.0);
-  adicao(2, p);
+  //p = pizza(150,"????? oi", "salgada", 10.0);
+  //adicao(2, p);
   imprime(T,0);
   imprimearq();
   /*imprime(T,0);
@@ -444,7 +467,7 @@ int main(void) {
   imprime(T, 0);*/
 
 
-  printf("\nacabou");
+  //printf("\nacabou");
 
 
   return 0;
