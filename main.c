@@ -416,9 +416,9 @@ int main(void) {
     int cod;
     float preco;
     printf("Qual o nome da pizza?\n");
-    scanf(" %10[0-9a-zA-Z ]", nome);
+    scanf(" %[^\n]", nome);
     printf("Qual o tipo da pizza?\n");
-    scanf(" %10[0-9a-zA-Z ]", tipo);
+    scanf(" %[^\n]", tipo);
     printf("Escreva seu preco\n");
     scanf(" %f",&preco);
     printf("Escreva o código da pizza \n");
