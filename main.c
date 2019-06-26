@@ -6,7 +6,7 @@
 // gcc main.c -o main bm.o pizza.o
 
 ///funcoes que geram arvore e da reboot nos dados indices
-TABM * geraarv(int t, char*nome){///gera dos dados iniciais
+TABM * geraArv(int t, char*nome){///gera dos dados iniciais
     TABM * T = inicializa();
     if(!nome) nome = "TC/dados_iniciais.dat";
     FILE *fp = fopen(nome, "rb");
@@ -134,7 +134,7 @@ TABM * completo(char *c, int t){///le do arquivo das arvs
 
 
 //pega o arquivo �ndice e vai gerar uma �rvore do 0 a partir dele
-TABM * geraarvarq(int t){///gera do arquivo indices
+TABM * geraArvArq(int t){///gera do arquivo indices
   FILE *fp2 = fopen("indices.dat", "rb");
   if(!fp2) exit(1);
   FILE *fp3 = fopen("pizzas.dat", "rb");
@@ -159,7 +159,7 @@ TABM * geraarvarq(int t){///gera do arquivo indices
 }
 //tentava achar um filho que era folha, e ia chamando pelo while
 //em desuso por poder achar um filho sem folha
-void imprimelista(TABM *T, int t){
+void imprimeLista(TABM *T, int t){
   int i;
   while(T && !T->folha){
     i = 0;
@@ -199,7 +199,7 @@ void geralistb(TABM *T, int t, char*nome){
 //passa um nome, arv e gera todos arquivos da arvore
 //raiz>0 raiz>1 raiz>2
 //pega a arv da ram pra disco. SalvaArvore
-void ToArq(char*c, TABM* arv, int t){
+void paraArq(char*c, TABM* arv, int t){
   int b = 1;
   if(!arv)return;
   if(!c){
@@ -224,13 +224,13 @@ void ToArq(char*c, TABM* arv, int t){
     sprintf(aux, "_%d", j); 
     strcpy(str, c);    
     strcat(str, aux);
-    ToArq(str, arv->filho[j], t);
+    paraArq(str, arv->filho[j], t);
   }
   char aux[10];
   sprintf(aux, "_%d", arv->nchaves); 
   strcpy(str, c);    
   strcat(str, aux);
-  ToArq(str, arv->filho[arv->nchaves], t);
+  paraArq(str, arv->filho[arv->nchaves], t);
 }
   free(str);
   if(b == 0)free(c);
@@ -313,7 +313,7 @@ TABM * abrecond(char *c, int t, int indice){
 
 //mexe no arq de �ndices
 //arq indices: info 1:indice da pizza info 2:ponteiro da pizza em pizza.dat info 3:is alive
-void adicaoarq(TPizza *p){
+void adicaoArq(TPizza *p){
   FILE *fp2 = fopen("indices.dat", "rb+");
   if(!fp2) exit(1);
   rewind(fp2);
@@ -355,12 +355,12 @@ TABM * adicao(int t, TPizza *p){
    printf("\n\n\n");
 
    if(busca(T, p->cod)){
-     adicaoarq(p);
+     adicaoArq(p);
      return T;
    }
    T = insere(T, p, t);
-   ToArq(NULL, T, t);
-   adicaoarq(p);
+   paraArq(NULL, T, t);
+   adicaoArq(p);
    return T;
 }
 
@@ -374,7 +374,7 @@ TABM * adicao(int t, TPizza *p){
 141, Queijo Brie com Figo (Doce Especial), R$ 55.00
 150, ????? oi (salgada), R$ 0.00
 150, ????? oi (salgada), R$ 0.00 */
-void imprimearq(){
+void imprimeArq(){
   FILE *fp2 = fopen("indices.dat", "rb");
   if(!fp2) exit(1);
   FILE *fp3 = fopen("pizzas.dat", "rb");
@@ -400,10 +400,10 @@ void imprimearq(){
 
 
 int main(void) {
-  TABM *T = geraarv(2, NULL);
-  imprimearq();
+  TABM *T = geraArv(2, NULL);
+  imprimeArq();
   imprime(T,0);
-  ToArq(NULL, T, 2);
+  paraArq(NULL, T, 2);
   libera(T);
   
   while(1){
@@ -439,17 +439,14 @@ int main(void) {
   //fread(blablalbal tamanho_pizza() blbalbal) tentar trocar pra le_pizza();
   //p = pizza(150,"????? oi", "salgada", 10.0);
   //adicao(2, p);
-  imprimearq();
+  imprimeArq();
   /*imprime(T,0);
-  ToArq(NULL, T, 2);
+  paraArq(NULL, T, 2);
   libera(T);
   TPizza *p = pizza(11,"calabresa", "salgada", 10.0);
   adicao(2, p);
   T = completo(NULL, 2);
   imprime(T, 0);*/
-
-
-  //printf("\nacabou");
 
   return 0;
 }
