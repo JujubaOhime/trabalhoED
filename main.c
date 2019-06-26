@@ -427,26 +427,8 @@ int main(void) {
     T = adicao(2, p);
     imprime(T, 0);
   }
-  //TPizza *p = pizza(9,"????? tchau", "salgada", 10.0);
-  //adicao(2, p);
-  //p = pizza(134,"????? meio daskjldha", "salgada", 10.0);
-  //adicao(2, p);
-  //p = pizza(150,"????? oi", "salgada", 10.0);
-  //adicao(2, p);
-  //entrada
-  //inser��es dando erro no pre�o
-  //le_pizza() salva_pizza()
-  //fread(blablalbal tamanho_pizza() blbalbal) tentar trocar pra le_pizza();
-  //p = pizza(150,"????? oi", "salgada", 10.0);
-  //adicao(2, p);
+
   imprimeArq();
-  /*imprime(T,0);
-  paraArq(NULL, T, 2);
-  libera(T);
-  TPizza *p = pizza(11,"calabresa", "salgada", 10.0);
-  adicao(2, p);
-  T = completo(NULL, 2);
-  imprime(T, 0);*/
 
   return 0;
 }
