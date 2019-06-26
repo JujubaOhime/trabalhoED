@@ -47,7 +47,7 @@ TLSE* buscal(TLSE *l, int elem){
 }
 
 
-int buscaindice(TLSE *l, int indice){
+int buscaIndice(TLSE *l, int indice){
   int atual = 0;
   TLSE *aux = l;
   while(atual != indice){

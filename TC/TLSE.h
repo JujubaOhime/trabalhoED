@@ -11,5 +11,5 @@ void imprimel(TLSE *l);
 void liberal(TLSE *l);
 TLSE* retiral(TLSE *l, int elem);
 TLSE* buscal(TLSE *l, int elem);
-int buscaindice(TLSE *l, int indice);
+int buscaIndice(TLSE *l, int indice);
 int tamLista(TLSE *l);
