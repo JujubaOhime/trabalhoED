@@ -1,6 +1,7 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "TC/bm.h"
 #include <string.h>
+#include <limits.h>
 
 ///func 1, dado um arquivo e o fator de ramificacao, gera a arvore;
 // gcc main.c -o main bm.o pizza.o
