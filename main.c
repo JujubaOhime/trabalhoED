@@ -375,21 +375,22 @@ TABM * adicao(int t, TPizza *p){
 150, ????? oi (salgada), R$ 0.00
 150, ????? oi (salgada), R$ 0.00 */
 void imprimearq(){
-   FILE *fp2 = fopen("indices.dat", "rb");
-   if(!fp2) exit(1);
-   FILE *fp3 = fopen("pizzas.dat", "rb");
-   if(!fp3) exit(1);
-   int control, indices[3];
-   TPizza *p = (TPizza*)malloc(tamanho_pizza_bytes());;
-   control = 2;
-   while(control>1){
-     control = fread(indices, sizeof(int), 3, fp2);
-     if(indices[2]){
-     printf("indice -> %d posicao -> %d\n", indices[0], indices[1]);
-     fseek(fp3, indices[1], SEEK_SET);
-     p = le_pizza(fp3);
-     imprime_pizza(p);}
-     }
+  FILE *fp2 = fopen("indices.dat", "rb");
+  if(!fp2) exit(1);
+  FILE *fp3 = fopen("pizzas.dat", "rb");
+  if(!fp3) exit(1);
+  int control, indices[3];
+  TPizza *p = (TPizza*)malloc(tamanho_pizza_bytes());
+  while(control>1){
+    control = fread(indices, sizeof(int), 3, fp2);
+    if(control<=1) break;
+    if(indices[2]) {
+      printf("indice -> %d posicao -> %d\n", indices[0], indices[1]);
+      fseek(fp3, indices[1], SEEK_SET);
+      p = le_pizza(fp3);
+      imprime_pizza(p);
+    }
+  }
   free(p);
   fclose(fp2);
   fclose(fp3);
@@ -450,6 +451,5 @@ int main(void) {
 
   //printf("\nacabou");
 
-  libera(T);
   return 0;
 }
