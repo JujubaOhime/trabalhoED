@@ -1,4 +1,4 @@
-ï»¿#include <stdio.h>
+#include <stdio.h>
 #include "TC/bm.h"
 #include <string.h>
 
@@ -62,10 +62,10 @@ TABM * le(FILE *fp, int t, int b, char *c){
   return novo;
 }
 
-// t param. arvore, boolean , c Ã© o nome, 
+// t param. arvore, boolean , c é o nome, 
 //1->T 2->BOOLEAN FOLHA 3->....N->chaves
 //gerencia a string do nome do arq
-//abre sÃ³ um e bota todos filhos como nulo a partir de le
+//abre só um e bota todos filhos como nulo a partir de le
 TABM * openf(char *c,int t){
   int b = 1;
   
@@ -87,7 +87,7 @@ TABM * openf(char *c,int t){
   return novo;
 }
 
-//pega arq por arq e transforma em Ã¡rvore
+//pega arq por arq e transforma em árvore
 //raiz>0>1.dat
 /* 
   4
@@ -133,7 +133,7 @@ TABM * completo(char *c, int t){///le do arquivo das arvs
 }
 
 
-//pega o arquivo Ã­ndice e vai gerar uma Ã¡rvore do 0 a partir dele
+//pega o arquivo índice e vai gerar uma árvore do 0 a partir dele
 TABM * geraarvarq(int t){///gera do arquivo indices
   FILE *fp2 = fopen("indices.dat", "rb");
   if(!fp2) exit(1);
@@ -266,7 +266,7 @@ TABM * abrecond(char *c, int t, int indice){
   if(!a)return a;
   int i = 0;
   while ((i < a->nchaves) && (indice > a->chave[i])) i++;
-  if(i == 0){ //filho que to tentando abrir Ã© menor que a primeira chave, abrir primeiro filho
+  if(i == 0){ //filho que to tentando abrir é menor que a primeira chave, abrir primeiro filho
     printf("caso1\n e menor que %d\n", a->chave[0]);
     char aux[10];
     sprintf(aux, "_%d", i); 
@@ -278,7 +278,7 @@ TABM * abrecond(char *c, int t, int indice){
     strcat(str, aux);
     a->filho[i+1] = openf(str,t);
   }
-  else if(i == a->nchaves){ // maior qua a ultima chave, acessa o Ãºltimo filho
+  else if(i == a->nchaves){ // maior qua a ultima chave, acessa o último filho
     printf("caso2\ne maior que %d\n", a->chave[a->nchaves-1]);
     char aux[10];
     sprintf(aux, "_%d", i); 
@@ -311,7 +311,7 @@ TABM * abrecond(char *c, int t, int indice){
   return a;
 }
 
-//mexe no arq de Ã­ndices
+//mexe no arq de índices
 //arq indices: info 1:indice da pizza info 2:ponteiro da pizza em pizza.dat info 3:is alive
 void adicaoarq(TPizza *p){
   FILE *fp2 = fopen("indices.dat", "rb+");
@@ -346,42 +346,22 @@ void adicaoarq(TPizza *p){
   fclose(fp2);
   fclose(fp3);
 }
-//
-/*
-antes:
-1
-2
-4
-5
-6
 
-depois:
-1
-2
-3
-4
-5
-6
-*/
 
 
 //adiciona uma pizza na arv na mp e no arq
-void adicao(int t, TPizza *p){
+TABM * adicao(int t, TPizza *p){
    TABM *T = abrecond(NULL, t, p->cod);
-   imprime(T, 0);
    printf("\n\n\n");
 
    if(busca(T, p->cod)){
      adicaoarq(p);
-     libera(T);
-     return;
+     return T;
    }
    T = insere(T, p, t);
-   imprime(T, 0);
    ToArq(NULL, T, t);
    adicaoarq(p);
-   libera(T);
-
+   return T;
 }
 
 
@@ -423,19 +403,23 @@ int main(void) {
   imprimearq();
   imprime(T,0);
   ToArq(NULL, T, 2);
+  libera(T);
   TPizza *p = pizza(9,"????? tchau", "salgada", 10.0);
-  adicao(2, p);
+  T = adicao(2, p);
+  imprime(T, 0);
   system ("pause");
+  libera(T);
   p = pizza(134,"????? meio daskjldha", "salgada", 10.0);
-  adicao(2, p);
+  T = adicao(2, p);
+  imprime(T, 0);
   system ("pause");
   //entrada
-  //inserÃ§Ãµes dando erro no preÃ§o
+  //inserções dando erro no preço
   //le_pizza() salva_pizza()
   //fread(blablalbal tamanho_pizza() blbalbal) tentar trocar pra le_pizza();
   p = pizza(150,"????? oi", "salgada", 10.0);
-  adicao(2, p);
-  imprime(T,0);
+  T = adicao(2, p);
+  imprime(T, 0);
   imprimearq();
   /*imprime(T,0);
   ToArq(NULL, T, 2);
@@ -451,7 +435,3 @@ int main(void) {
 
   return 0;
 }
-
-
-
-
