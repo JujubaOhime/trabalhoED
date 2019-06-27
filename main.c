@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "TC/bm.h"
 #include "TC/TLSE.h"
 #include <string.h>
@@ -473,14 +473,16 @@ TPizza * getpizza(){
   return pizza(cod, nome, tipo, preco);
 }
 
+
 int main(void) {
   int resposta = 0;
-  int T;
+  int T = 0;
   int indice;
   TABM *util;
   TPizza *sup;
-  printf("por favor, insira o T desejado para a arvore\n");
-  scanf("%d", &T);
+  do{
+    printf("por favor, insira o T desejado para a arvore\n");
+    scanf("%d", &T);}while(T<=0);
   FILE *fp = fopen("ARQ/raiz.dat", "rb");
   if(!fp){
     util = geraArvArq(T);
@@ -504,8 +506,9 @@ int main(void) {
     switch(resposta){
       ///case 1 completo
       case 1:
-      printf("por favor, insira o T desejado para a arvore\n");
-      scanf("%d", &T);
+      do{
+    printf("por favor, insira o T desejado para a arvore\n");
+    scanf("%d", &T);}while(T<=0);
       util = geraArvArq(T);
       paraArq(NULL,util,T);
       libera(util);
