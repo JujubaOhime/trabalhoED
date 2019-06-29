@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include "TC/bm.h"
 #include "TC/TLSE.h"
 #include <string.h>
@@ -93,12 +93,10 @@ TABM * openf(char *c,int t){
 //raiz>0>1.dat
 /* 
   4
-
 3 
     1
   2
     0
-
     T = 2   ate 4 filhos
     raiz>0
     raiz>1
@@ -346,8 +344,6 @@ void adicaoarq(TPizza *p){
 //adiciona uma pizza na arv na mp e no arq
 TABM * adicao(int t, TPizza *p){
    TABM *T = abrecond(NULL, t, p->cod);
-   printf("\n\n\n");
-
    if(busca(T, p->cod)){
      adicaoarq(p);
      return T;
@@ -377,7 +373,6 @@ void imprimeArq(){
      control = fread(indices, sizeof(int), 3, fp2);
      if (control<=1) break;
      if(indices[2]){
-     printf("indice -> %d posicao -> %d\n", indices[0], indices[1]);
      fseek(fp3, indices[1], SEEK_SET);
      p = le_pizza(fp3);
      imprime_pizza(p);}
@@ -414,11 +409,13 @@ TPizza * buscaPizza(int indice){
   return p;
 }
 
-void imprimeIndice(int indice){
+int imprimeIndice(int indice){
   TPizza * p = buscaPizza(indice);
   if(p){imprime_pizza(p);
-  free(p);}
+  free(p);
+  return 1;}
   else printf("pizza nao encontrada >:)\n");
+  return 0;
   
 }
 
@@ -453,46 +450,127 @@ TLSE * buscat(char * c){
 
 void imprimeCat(char *c){
   TLSE *T = buscat(c);
-  printf("\n\n");
+  printf("\n");
   for(int i = 0; i < tamLista(T) ;i++){
   TPizza *p = buscaPizza(buscaIndice(T, i));
   imprime_pizza(p);
   }
 }
 
-
+TPizza * getPizza(){
+  char nome[50];
+  char tipo[20];
+  int cod;
+  float preco;
+  printf("Qual o nome da pizza?\n");
+  scanf(" %[^\n]", nome);
+  printf("Qual o tipo da pizza?\n");
+  scanf(" %[^\n]", tipo);
+  printf("Escreva seu preco\n");
+  scanf(" %f",&preco);
+  printf("Escreva o código da pizza \n");
+  scanf(" %d",&cod);
+  return pizza(cod, nome, tipo, preco);
+}
 
 
 int main(void) {
-  TABM *T = geraArv(2, NULL);
-  imprimeArq();
-  imprime(T,0);
-  paraArq(NULL, T, 2);
-  libera(T);
-  
-  while(1){
-    char aux[3];
-    printf("Deseja adicionar alguma pizza?(s/n) \n");
-    scanf(" %s", aux);
-    if(strcmp(aux, "n") == 0) break;
-    char nome[50];
-    char tipo[20];
-    int cod;
-    float preco;
-    printf("Qual o nome da pizza?\n");
-    scanf(" %[^\n]", nome);
-    printf("Qual o tipo da pizza?\n");
-    scanf(" %[^\n]", tipo);
-    printf("Escreva seu preco\n");
-    scanf(" %f",&preco);
-    printf("Escreva o código da pizza \n");
-    scanf(" %d",&cod);
-    TPizza *p = pizza(cod,nome,tipo,preco);
-    T = adicao(2, p);
-    imprime(T, 0);
+  int resposta = 0;
+  int T = 0;
+  int indice;
+  TABM *util;
+  TPizza *sup;
+  do{
+    printf("por favor, insira o T desejado para a arvore\n");
+    scanf("%d", &T);}while(T<=0);
+  FILE *fp = fopen("ARQ/raiz.dat", "rb");
+  if(!fp){
+    util = geraArvArq(T);
+    paraArq(NULL,util,T);
+    libera(util);
   }
+  else{
+    int t;
+    fread(&t, sizeof(int), 1, fp);
+    fclose(fp);
+    if(t!= T){
+    printf("T diferente do registrado da arvore anterior\n");
+    util = geraArvArq(T);
+    paraArq(NULL,util,T);
+    libera(util);
+    }
+  }
+  while(resposta != -9){
+    printf("T atual -> %d\ninsira:\n1 -> mudar o T\n2 -> adicionar pizza\n3 -> buscar elemento\n4 -> buscar categoria\n5 -> imprimir arvore\n6 -> imprimir catalogo\n1000 resetar catalogo e arvore\n1111 resetar somente arvore\n-9 para encerrar\n", T);
+    scanf("%d", &resposta);
+    switch(resposta){
+      ///case 1 completo
+      case 1:
+      do{
+    printf("por favor, insira o T desejado para a arvore\n");
+    scanf("%d", &T);}while(T<=0);
+      util = geraArvArq(T);
+      paraArq(NULL,util,T);
+      libera(util);
+      break;
 
-  imprimeArq();
+      ///case 2 completo
+      case 2:
+      sup = getPizza();
+      util = adicao(T, sup);
+      imprime(util, 0);
+      libera(util);
+      free(sup);
+      break;
+      
+      ///case 3 falta opcao de remocao
+      case 3:
+      printf("insira o indice desejado\n");
+      scanf("%d", &indice);
+      if(imprimeIndice(indice)){
+        char aux[3];
+        printf("deseja remover? s/n\n");
+        scanf(" %s", aux);
+        if(strcmp(aux, "s") == 0){
+          printf("nao tem remocao kkkkk\n");
+        }
+      }
+      break;
 
+
+      ///falta remocao
+      case 4:
+      printf("insira a categoria desejada\n");
+      char tipo[20];
+      scanf(" %[^\n]", tipo);
+      imprimeCat(tipo);
+      break;
+
+      ///case 5 completo
+      case 5:
+      util = completo(NULL, T);
+      imprime(util, 0);
+      libera(util);
+      break;
+
+      ///case 6 completo
+      case 6:
+      imprimeArq();
+      break;
+
+      ///case 1000 completo
+      case 1000:
+      geraArv(T, NULL);
+      break;
+
+
+      ///case 1111 completo
+      case 1111:
+      util = geraArvArq(T);
+      paraArq(NULL,util,T);
+      libera(util);
+      break;
+    }
+  }
   return 0;
 }
