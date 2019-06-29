@@ -4,7 +4,7 @@
 
 void imprime_pizza(TPizza *p)
 {
-	printf("%d, %s (%s), R$ %.2f\n", p->cod, p->nome, p->descricao, p->preco);
+	printf("\e[34;1;1m%d, %s (%s), R$ %.2f\e[m\n", p->cod, p->nome, p->descricao, p->preco);
 }
 
 
