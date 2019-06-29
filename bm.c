@@ -131,4 +131,165 @@ TABM *insere(TABM *T, TPizza *p, int t){
   return T;
 }
 
+TABM *remover(TABM *arv, int ch, int t)
+{
+	if (!arv) return arv;
+	int i;
+	// se o numero de chaves for maior que o num da posição e o elem for igual a chave da posição:
 
+	if(arv->folha)
+	{// caso 1
+		for (i = 0; i < arv->nchaves && arv->chave[i] < ch; i++); // acha posição nó onde deve estar o que quer remover
+		printf("\nCASO 1\n");
+		int j;
+		for (j = i; j < arv->nchaves - 1; j++) arv->chave[j] = arv->chave[j + 1];
+		arv->nchaves--;
+		return arv;
+	}
+
+	for (i = 0; i < arv->nchaves && arv->chave[i] <= ch; i++); // acha posição nó onde deve estar o que quer remover
+	
+	TABM *y = arv->filho[i], *z = NULL;
+
+	if (y->nchaves == t - 1)
+	{ //CASOS 3A e 3B
+		if ((i < arv->nchaves) && (arv->filho[i + 1]->nchaves >= t))
+		{ //CASO 3A
+			printf("CASO 3A: i menor que nchaves");
+			printf("  i = %d", i);
+			z = arv->filho[i + 1]; // z = 10-29 e y = 2
+			y->chave[t - 1] = arv->chave[i]; //dar a y a chave i da arv; y = 2-10
+			y->nchaves++;
+			if (arv->chave[i] == z->chave[0]) {
+				arv->chave[i] = z->chave[1];
+			}
+			else arv->chave[i] = z->chave[0]; //dar a arv uma chave de z //10 por 10
+			int j;
+			for (j = 0; j < z->nchaves - 1; j++) //ajustar chaves de z
+				z->chave[j] = z->chave[j + 1];
+			//z->chave[j] = 0; Rosseti
+			y->filho[y->nchaves] = z->filho[0]; //enviar ponteiro menor de z para o novo elemento em y
+			for (j = 0; j < z->nchaves; j++)	//ajustar filhos de z
+				z->filho[j] = z->filho[j + 1]; // z = 29
+			z->nchaves--;
+			arv->filho[i] = remover(arv->filho[i], ch, t);
+			return arv;
+		}
+		if ((i > 0) && (!z) && (arv->filho[i - 1]->nchaves >= t))
+		{ //CASO 3A
+			printf("\nCASO 3A: i igual a nchaves\n"); // i = 3
+			z = arv->filho[i - 1];
+			int j;
+			if (y->folha){
+				for (j = y->nchaves; j > 0; j--) //encaixar lugar da nova chave
+					y->chave[j] = y->chave[j - 1];
+				y->nchaves++;
+				int elem = z->chave[z->nchaves-1];
+				z->nchaves--;
+				y->chave[0] = elem;
+				arv->chave[i-1] = elem;
+				arv->filho[i] = remover(y, ch, t);
+				return arv;
+			}
+			for (j = y->nchaves; j > 0; j--) //encaixar lugar da nova chave
+				y->chave[j] = y->chave[j - 1];
+			for (j = y->nchaves + 1; j > 0; j--) //encaixar lugar dos filhos da nova chave
+				y->filho[j] = y->filho[j - 1];
+			y->chave[0] = arv->chave[i - 1]; //dar a y a chave i da arv
+			y->nchaves++;
+			arv->chave[i - 1] = z->chave[z->nchaves - 1]; //dar a arv uma chave de z
+			y->filho[0] = z->filho[z->nchaves];			  //enviar ponteiro de z para o novo elemento em y
+			z->nchaves--;
+			arv->filho[i] = remover(y, ch, t);
+			return arv;
+		}
+		if (!z)
+		{ //CASO 3B
+			if (i < arv->nchaves && arv->filho[i + 1]->nchaves == t - 1)
+			{	
+				printf("\nCASO 3B: i menor que nchaves\n");
+				printf("  i = %d", i);
+				z = arv->filho[i + 1]; 
+				int j;
+				if (y->folha){
+					for (j = 0; j < t - 1; j++)
+					{
+						y->chave[t -1 + j] = z->chave[j]; //passar filho[i+1] para filho[i]
+						y->nchaves++;
+					}
+					for (j = i; j < arv->nchaves - 1; j++)
+					{ //limpar referências de i
+						arv->chave[j] = arv->chave[j + 1];
+						arv->filho[j + 1] = arv->filho[j + 2];
+					}
+					arv->nchaves--;
+					arv = remover(arv, ch, t);
+					return arv;
+
+				}
+				y->chave[t - 1] = arv->chave[i]; //pegar chave [i] e coloca ao final de filho[i]
+				y->nchaves++;
+				for (j = 0; j < t - 1; j++)
+				{
+					y->chave[t + j] = z->chave[j]; //passar filho[i+1] para filho[i]
+					y->nchaves++;
+				}
+				if (!y->folha)
+				{
+					for (j = 0; j < t; j++)
+					{
+						y->filho[t + j] = z->filho[j];
+					}
+				}
+				for (j = i; j < arv->nchaves - 1; j++)
+				{ //limpar referências de i
+					arv->chave[j] = arv->chave[j + 1];
+					arv->filho[j + 1] = arv->filho[j + 2];
+				}
+				arv->nchaves--;
+				arv = remover(arv, ch, t);
+				return arv;
+			}
+			if ((i > 0) && (arv->filho[i - 1]->nchaves == t - 1))
+			{
+				z = arv->filho[i - 1];
+				int j;
+				printf("\nCASO 3B: i igual a nchaves\n");
+				if (y->folha){
+					for (j = 0; j < t - 1; j++)
+					{
+						z->chave[t + j] = y->chave[j]; //passar filho[i+1] para filho[i]
+						z->nchaves++;
+					}
+					arv->nchaves--;
+					arv->filho[i - 1] = z;
+					arv = remover(arv, ch, t);
+					return arv;
+				}
+				if (i == arv->nchaves)
+					z->chave[t - 1] = arv->chave[i - 1]; //pegar chave[i] e poe ao final de filho[i-1]
+				else
+					z->chave[t - 1] = arv->chave[i]; //pegar chave [i] e poe ao final de filho[i-1]
+				z->nchaves++;
+				for (j = 0; j < t - 1; j++)
+				{
+					z->chave[t + j] = y->chave[j]; //passar filho[i+1] para filho[i]
+					z->nchaves++;
+				}
+				if (!z->folha)
+				{
+					for (j = 0; j < t; j++)
+					{
+						z->filho[t + j] = y->filho[j];
+					}
+				}
+				arv->nchaves--;
+				arv->filho[i - 1] = z;
+				arv = remover(arv, ch, t);
+				return arv;
+			}
+		}
+	}
+	arv->filho[i] = remover(arv->filho[i], ch, t);
+	return arv;
+}

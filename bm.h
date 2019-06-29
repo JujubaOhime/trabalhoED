@@ -16,3 +16,4 @@ void imprime(TABM *a, int andar);
 TABM *divisao(TABM *x, int i, TABM* y, int t);
 TABM *insere_nao_completo(TABM *x, TPizza *p, int t);
 TABM *insere(TABM *T, TPizza *p, int t);
+TABM *remover(TABM *arv, int ch, int t);
