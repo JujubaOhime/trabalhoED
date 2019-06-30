@@ -297,58 +297,51 @@ TABM *abrecond(char *c, int t, int indice)
 
 //mexe no arq de índices
 //arq indices: info 1:indice da pizza info 2:ponteiro da pizza em pizza.dat info 3:is alive
-void adicaoarq(TPizza *p)
-{
-	FILE *fp2 = fopen("indices.dat", "rb+");
-	if (!fp2)
-		exit(1);
-	rewind(fp2);
-	FILE *fp3 = fopen("pizzas.dat", "rb+");
-	if (!fp3)
-		exit(1);
-	int indices[3];
-	int controle = 1;
-	indices[0] = -1;
-	indices[1] = -1;
-	indices[2] = -1;
-	while (indices[0] < p->cod && controle > 0)
-		controle = fread(indices, sizeof(int), 3, fp2);
-	if (indices[0] == p->cod)
-	{
-		fseek(fp2, -3 * sizeof(int), SEEK_CUR);
-		indices[2] = 1;
-		fwrite(fp2, sizeof(int), 3, fp2);
-		fseek(fp3, indices[1], SEEK_SET);
-		salva_pizza(p, fp3);
-		fclose(fp2);
-		fclose(fp3);
-		return;
-	}
-	int indicesaux[3];
-	fseek(fp3, 0, SEEK_END);
-	indicesaux[0] = p->cod;
-	indicesaux[1] = ftell(fp3);
-	indicesaux[2] = 1;
-	salva_pizza(p, fp3);
-	fseek(fp2, -3 * sizeof(int), SEEK_CUR);
-	fwrite(indicesaux, sizeof(int), 3, fp2);
-	indicesaux[0] = indices[0];
-	indicesaux[1] = indices[1];
-	indicesaux[2] = indices[2];
-	while (controle > 0)
-	{
-		controle = fread(indices, sizeof(int), 3, fp2);
-		fseek(fp2, -3 * sizeof(int), SEEK_CUR);
-		fwrite(indicesaux, sizeof(int), 3, fp2);
-		if (controle == 3)
-		{
-			indicesaux[0] = indices[0];
-			indicesaux[1] = indices[1];
-			indicesaux[2] = indices[2];
-		}
-	}
-	fclose(fp2);
-	fclose(fp3);
+void adicaoarq(TPizza *p){
+  FILE *fp2 = fopen("indices.dat", "rb+");
+  if(!fp2) exit(8);
+  rewind(fp2);
+  FILE *fp3 = fopen("pizzas.dat", "rb+");
+  if(!fp3) exit(9);
+  int indices[3];
+  int controle = 1;
+  indices[0] = -1; indices[1] = -1;indices[2] = -1;
+    while(indices[0]< p->cod && controle>0)controle = fread(indices, sizeof(int), 3, fp2);
+    if(indices[0] == p->cod){
+      fseek(fp2, -3*sizeof(int), SEEK_CUR);
+      indices[2] = 1;
+      fwrite(fp2, sizeof(int), 3, fp2);
+      fseek(fp3, indices[1], SEEK_SET);
+      salva_pizza(p, fp3);
+      fclose(fp2);
+      fclose(fp3);
+      return;
+    }
+    if(controle<=0){
+      fseek(fp2, 0, SEEK_END);
+      fseek(fp3, 0, SEEK_END);
+      indices[0] = p->cod; indices[1] = ftell(fp3); indices[2] = 1;
+      salva_pizza(p, fp3);
+      fwrite(indices, sizeof(int), 3, fp2);
+    }
+    else
+    {
+      int posicao = ftell(fp2)-3*sizeof(int);
+      fseek(fp2, 0, SEEK_END);
+      while(ftell(fp2) != posicao){
+        fseek(fp2, -3*sizeof(int), SEEK_CUR);
+        fread(indices, sizeof(int), 3, fp2);
+        fwrite(indices, sizeof(int), 3, fp2);
+        fseek(fp2, -6*sizeof(int), SEEK_CUR);
+      }
+      fseek(fp3, 0, SEEK_END);
+      indices[0] = p->cod; indices[1] = ftell(fp3); indices[2] = 1;
+      salva_pizza(p, fp3);
+      fwrite(indices, sizeof(int), 3, fp2);
+    }
+    
+  fclose(fp2);
+  fclose(fp3);
 }
 
 //adiciona uma pizza na arv na mp e no arq
@@ -361,7 +354,7 @@ TABM *adicao(int t, TPizza *p)
 		return T;
 	}
 	T = insere(T, p, t);
-	paraArq(NULL, T, t);3
+	paraArq(NULL, T, t);
 	adicaoarq(p);
 	return T;
 }

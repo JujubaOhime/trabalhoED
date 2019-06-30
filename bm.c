@@ -158,13 +158,23 @@ TABM *remover(TABM *arv, int ch, int t)
 			printf("CASO 3A: i menor que nchaves");
 			printf("  i = %d", i);
 			z = arv->filho[i + 1]; // z = 10-29 e y = 2
+			int j;
+			if(y->folha){
+				y->chave[t - 1] = arv->chave[i];
+				y->nchaves++;
+				int elem = z->chave[0];
+				for(j = 0; j<z->nchaves -1; j++){
+					z->chave[j] = z->chave[j+1];
+				}
+				z->nchaves--;
+				y->chave[y->nchaves-1] = elem;
+				arv->chave[i] = z->chave[0];
+				arv->filho[i] = remover(y, ch, t);
+				return arv;
+			}
 			y->chave[t - 1] = arv->chave[i]; //dar a y a chave i da arv; y = 2-10
 			y->nchaves++;
-			if (arv->chave[i] == z->chave[0]) {
-				arv->chave[i] = z->chave[1];
-			}
-			else arv->chave[i] = z->chave[0]; //dar a arv uma chave de z //10 por 10
-			int j;
+			arv->chave[i] = z->chave[0]; //dar a arv uma chave de z //10 por 10
 			for (j = 0; j < z->nchaves - 1; j++) //ajustar chaves de z
 				z->chave[j] = z->chave[j + 1];
 			//z->chave[j] = 0; Rosseti
@@ -262,7 +272,7 @@ TABM *remover(TABM *arv, int ch, int t)
 						z->nchaves++;
 					}
 					arv->nchaves--;
-					arv->filho[i - 1] = z;
+					//arv->filho[i - 1] = z;
 					arv = remover(arv, ch, t);
 					return arv;
 				}
