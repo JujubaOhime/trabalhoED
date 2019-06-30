@@ -1,5 +1,5 @@
 nome_executavel = teste.exe
-codigo_fonte = bm.c pizza.c TLSE.c main.c
+codigo_fonte = pizza.c bm.c TLSE.c main.c
 compilador = gcc
 
 run:
