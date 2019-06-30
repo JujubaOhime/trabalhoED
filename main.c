@@ -78,8 +78,7 @@ TABM *le(FILE *fp, int t, int booleano, char *c)
 	return novo;
 }
 
-// t param. arvore, boolean , c é o nome,
-//1->T 2->BOOLEAN FOLHA 3->....N->chaves
+
 //gerencia a string do nome do arq
 //abre só um e bota todos filhos como nulo a partir de le
 TABM *openf(char *c, int t)
@@ -107,20 +106,7 @@ TABM *openf(char *c, int t)
 	return novo;
 }
 
-//pega arq por arq e transforma em árvore
-//raiz>0>1.dat
-/* 
-  4
-3 
-    1
-  2
-    0
-    T = 2   ate 4 filhos
-    raiz>0
-    raiz>1
-    raiz>2
-    raiz>3
-*/
+
 
 //le a arv em disco e coloca na mP
 TABM *completo(char *c, int t)
@@ -187,57 +173,6 @@ TABM *geraArvArq(int t)
 	fclose(fp2);
 	fclose(fp3);
 	return T;
-}
-//tentava achar um filho que era folha, e ia chamando pelo while
-//em desuso por poder achar um filho sem folha
-void imprimeLista(TABM *T, int t)
-{
-	int i;
-	while (T && !T->folha)
-	{
-		i = 0;
-		while (!T->filho[i] && i <= T->nchaves)
-			i++;
-		T = T->filho[i];
-	}
-	while (T)
-	{
-		for (i = 0; i < T->nchaves; i++)
-		{
-			if (T->pizzas[i])
-				imprime_pizza(T->pizzas[i]);
-		}
-		T =
-
-			T->prox;
-	}
-}
-
-//igual imprimelist mas ele coloca em arq.
-//em desuso
-void geralistb(TABM *T, int t, char *nome)
-{
-	int i;
-	FILE *fp = fopen(nome, "wb");
-	if (!fp)
-		exit(1);
-	while (T && !T->folha)
-	{
-		i = 0;
-		while (!T->filho[i] && i <= T->nchaves)
-			i++;
-		T = T->filho[i];
-	}
-	while (T)
-	{
-		for (i = 0; i < T->nchaves; i++)
-		{
-			if (T->pizzas[i])
-				salva_pizza(T->pizzas[i], fp);
-		}
-		T = T->prox;
-	}
-	fclose(fp);
 }
 
 //passa um nome, arv e gera todos arquivos da arvore
@@ -426,7 +361,7 @@ TABM *adicao(int t, TPizza *p)
 		return T;
 	}
 	T = insere(T, p, t);
-	paraArq(NULL, T, t);
+	paraArq(NULL, T, t);3
 	adicaoarq(p);
 	return T;
 }
@@ -468,12 +403,7 @@ void remocao(int t, int indice)
 	libera(T);
 }
 
-//3 int 1 indice 2 ponteiro 3 is alive
-//fseek(fp, ponteiro, SEEK_SET)
-//le_pizza
-/*135, Milho com Bacon (Salgada), R$ 32.00
-137, Frango, Milho e Palmito (Salgada), R$ 27.00
-*/
+
 void imprimeArq()
 {
 	FILE *fp2 = fopen("indices.dat", "rb");
@@ -610,14 +540,6 @@ void removeCat(TLSE *list, int T)
 	}
 }
 
-/*
-125, Cogumelhos Especiais (Especial), R$ 57.00
-111, Linguica Artesanal com Cubos de Queijo Qualho (Especial), R$ 50.00
-102, Presunto Parma com Muzzarela de Bufala (Especial), R$ 57.00
-95, Rucula com Tomate Seco (Especial), R$ 40.00
-40, Camarao com Cogumelos (Especial), R$ 51.00
-23, Presunto Parma com Rucula (Especial), R$ 50.00
-18*/
 
 TPizza *getPizza()
 {
@@ -635,6 +557,23 @@ TPizza *getPizza()
 	scanf(" %d", &cod);
 	return pizza(cod, nome, tipo, preco);
 }
+
+
+
+void merge(char *c, int t){
+  FILE* fp = fopen(c, "rb");
+  if(!fp)exit(1);
+  rewind(fp);
+  TPizza * p;
+  TABM *T;
+    do{
+      p = le_pizza(fp);
+      if(p) {T = adicao(t, p);
+      if(T) libera(T);}
+    }while(p);
+    fclose(fp);
+}
+
 
 int main(void)
 {
@@ -720,13 +659,14 @@ int main(void)
 			char tipo[20];
 			scanf(" %[^\n]", tipo);
 			listaUtil = imprimeCat(tipo);
+			if (tamLista(listaUtil) != 0){
 			char aux[3];
 			printf("\e[34;1;1mdeseja remover categoria? s/n\e[m\n");
 			scanf(" %s", aux);
 			if (strcmp(aux, "s") == 0)
 			{
 				removeCat(listaUtil, T);
-			}
+			}}
 			break;
 
 		///case 5 completo
@@ -741,6 +681,13 @@ int main(void)
 		case 6:
 			imprimeArq();
 			break;
+
+		/*case 7:
+     	printf("\e[34;1;1minsira o nome do arquivo para merge\e[m\n");
+      	char nome[100];
+      	scanf(" %[^\n]", nome);
+      	merge(nome, T);
+      	break;*/
 
 		///case 1000 completo
 		case 1000:
