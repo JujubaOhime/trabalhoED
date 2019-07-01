@@ -1,6 +1,6 @@
 ﻿#include <stdio.h>
-#include "TC/bm.h"
-#include "TC/TLSE.h"
+#include "bm.h"
+#include "TLSE.h"
 #include <string.h>
 #include <limits.h>
 
@@ -10,7 +10,7 @@
 ///funcoes que geram arvore e da reboot nos dados indices
 TABM * geraArv(int t, char*nome){///gera dos dados iniciais
     TABM * T = inicializa();
-    if(!nome) nome = "TC/dados_iniciais.dat";
+    if(!nome) nome = "dados_iniciais.dat";
     FILE *fp = fopen(nome, "rb");
     FILE *fp2 = fopen("indices.dat", "wb");
     FILE *fp3 = fopen("pizzas.dat", "wb");
