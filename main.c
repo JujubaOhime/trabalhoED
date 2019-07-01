@@ -303,21 +303,19 @@ void adicaoarq(TPizza *p){
   rewind(fp2);
   FILE *fp3 = fopen("pizzas.dat", "rb+");
   if(!fp3) exit(9);
+  rewind(fp3);
   int indices[3];
   int controle = 1;
   indices[0] = -1; indices[1] = -1;indices[2] = -1;
     while(indices[0]< p->cod && controle>0)controle = fread(indices, sizeof(int), 3, fp2);
     if(indices[0] == p->cod){
-      fseek(fp2, -3*sizeof(int), SEEK_CUR);
       indices[2] = 1;
-      fwrite(fp2, sizeof(int), 3, fp2);
+      fseek(fp2, -3*sizeof(int), SEEK_CUR);
+      fwrite(indices, sizeof(int), 3, fp2);
       fseek(fp3, indices[1], SEEK_SET);
       salva_pizza(p, fp3);
-      fclose(fp2);
-      fclose(fp3);
-      return;
     }
-    if(controle<=0){
+     else if(controle<=0){
       fseek(fp2, 0, SEEK_END);
       fseek(fp3, 0, SEEK_END);
       indices[0] = p->cod; indices[1] = ftell(fp3); indices[2] = 1;
@@ -345,18 +343,18 @@ void adicaoarq(TPizza *p){
 }
 
 //adiciona uma pizza na arv na mp e no arq
-TABM *adicao(int t, TPizza *p)
-{
-	TABM *T = abrecond(NULL, t, p->cod);
-	if (busca(T, p->cod))
-	{
-		adicaoarq(p);
-		return T;
-	}
-	T = insere(T, p, t);
-	paraArq(NULL, T, t);
-	adicaoarq(p);
-	return T;
+TABM * adicao(int t, TPizza *p){
+   TABM *T = completo(NULL, t);
+   if(T){
+   if(busca(T, p->cod)){
+     adicaoarq(p);
+     return T;
+   }
+   T = insere(T, p, t);
+   paraArq(NULL, T, t);
+   adicaoarq(p);
+   return T;}
+   return NULL;
 }
 
 void remocaoarq(int indice)
@@ -551,151 +549,153 @@ TPizza *getPizza()
 	return pizza(cod, nome, tipo, preco);
 }
 
-
+void imprimefp2(){
+  FILE *fp2 = fopen("indices.dat", "rb+");
+  if(!fp2) exit(13);
+  rewind(fp2);
+  int controle = 1;
+  int indices[3];
+  while(controle>0){controle = fread(indices, sizeof(int), 3, fp2);
+  if(controle>0)printf("%d %d %d\n",indices[0], indices[1],indices[2]);}
+  fclose(fp2);
+}
 
 void merge(char *c, int t){
   FILE* fp = fopen(c, "rb");
   if(!fp)exit(1);
   rewind(fp);
-  TPizza * p;
-  TABM *T;
+  TPizza * p = NULL;
+  TABM *T = NULL;
     do{
-      p = le_pizza(fp);
-      if(p) {T = adicao(t, p);
+      p = le_pizza(fp);;
+      if(p){{T = adicao(t, p); printf("tentando add ");imprime_pizza(p);}
       if(T) libera(T);}
     }while(p);
     fclose(fp);
 }
 
 
-int main(void)
-{
-	int resposta = 0;
-	int T = 0;
-	int indice;
-	TABM *util;
-	TPizza *sup;
-	TLSE *listaUtil;
-	do
-	{
-		printf("\e[34;1;1mpor favor, insira o T desejado para a arvore\e[m\n");
-		scanf("%d", &T);
-	} while (T <= 0);
-	FILE *fp = fopen("ARQ/raiz.dat", "rb");
-	if (!fp)
-	{
-		util = geraArvArq(T);
-		paraArq(NULL, util, T);
-		libera(util);
-	}
-	else
-	{
-		int t;
-		fread(&t, sizeof(int), 1, fp);
-		fclose(fp);
-		if (t != T)
-		{
-			printf("T diferente do registrado da arvore anterior\n");
-			util = geraArvArq(T);
-			paraArq(NULL, util, T);
-			libera(util);
-		}
-	}
-	while (resposta != -9)
-	{
-		printf("\e[34;1;1mT atual -> %d\e[m\n", T);
-		printf("\e[34;1;1minsira: \e[m\n");
-		printf("\e[33;1m1\e[m -> mudar o T\n\e[33;1m2\e[m -> adicionar pizza\n\e[33;1m3\e[m -> buscar elemento\n\e[33;1m4\e[m -> buscar categoria\n\e[33;1m5\e[m -> imprimir arvore\n\e[33;1m6\e[m -> imprimir catalogo\n\e[33;1m1000\e[m resetar catalogo e arvore\n\e[33;1m1111\e[m resetar somente arvore\n\e[33;1m-9\e[m para encerrar\n");
-		scanf("%d", &resposta);
-		switch (resposta)
-		{
-		///case 1 completo
-		case 1:
-			do
-			{
-				printf("\e[34;1;1mpor favor, insira o T desejado para a arvore\e[m\n");
-				scanf("%d", &T);
-			} while (T <= 0);
-			util = geraArvArq(T);
-			paraArq(NULL, util, T);
-			libera(util);
-			break;
+int main(void) {
+  int resposta = 0;
+  int T = 0;
+  int indice;
+  TABM *util;
+  TPizza *sup;
+  TLSE * listaUtil;
+  do{
+    printf("\e[34;1;1mpor favor, insira o T desejado para a arvore\e[m\n");
+    scanf("%d", &T);}while(T<=0);
+  FILE *fp = fopen("ARQ/raiz.dat", "rb");
+  if(!fp){
+    util = geraArvArq(T);
+    paraArq(NULL,util,T);
+    libera(util);
+  }
+  else{
+    int t;
+    fread(&t, sizeof(int), 1, fp);
+    fclose(fp);
+    if(t!= T){
+    printf("T diferente do registrado da arvore anterior\n");
+    util = geraArvArq(T);
+    paraArq(NULL,util,T);
+    libera(util);
+    }
+  }
+  while(resposta != -9){
+    printf("\e[34;1;1mT atual -> %d\e[m\n", T);
+    printf("\e[34;1;1minsira: \e[m\n");
+     printf("\e[33;1m1\e[m -> mudar o T\n\e[33;1m2\e[m -> adicionar pizza\n\e[33;1m3\e[m -> buscar elemento\n\e[33;1m4\e[m -> buscar categoria\n\e[33;1m5\e[m -> imprimir arvore\n\e[33;1m6\e[m -> imprimir catalogo\n\e[33;1m\e[33;1m7\e[m -> merge com outro arquivo\n\e[33;1m1000\e[m resetar catalogo e arvore\n\e[33;1m1111\e[m resetar somente arvore\n\e[33;1m-9\e[m para encerrar\n");
+    
+    scanf("%d", &resposta);
+    switch(resposta){
+      ///case 1 completo
+      case 1:
+      do{
+    printf("\e[34;1;1mpor favor, insira o T desejado para a arvore\e[m\n");
+    scanf("%d", &T);}while(T<=0);
+      util = geraArvArq(T);
+      paraArq(NULL,util,T);
+      libera(util);
+      break;
 
-		///case 2 completo
-		case 2:
-			sup = getPizza();
-			util = adicao(T, sup);
-			imprime(util, 0);
-			libera(util);
-			free(sup);
-			break;
+      ///case 2 completo
+      case 2:
+      sup = getPizza();
+      util = adicao(T, sup);
+      imprime(util, 0);
+      libera(util);
+      free(sup);
+      break;
+      
+      ///case 3 falta opcao de remocao
+      case 3:
+      printf("\e[34;1;1minsira o indice desejado\e[m\n");
+      scanf("%d", &indice);
+      if(imprimeIndice(indice)){
+        char aux[3];
+        printf("\e[34;1;1mdeseja remover? s/n\e[m\n");
+        scanf(" %s", aux);
+        if(strcmp(aux, "s") == 0){
+          remocao(T, indice);
+        }
+      }
+      break;
 
-		///case 3 falta opcao de remocao
-		case 3:
-			printf("\e[34;1;1minsira o indice desejado\e[m\n");
-			scanf("%d", &indice);
-			if (imprimeIndice(indice))
-			{
-				char aux[3];
-				printf("\e[34;1;1mdeseja remover? s/n\e[m\n");
-				scanf(" %s", aux);
-				if (strcmp(aux, "s") == 0)
-				{
-					remocao(T, indice);
-				}
-			}
-			break;
 
-		///falta remocao
-		case 4:
-			printf("\e[34;1;1minsira a categoria desejada\e[m\n");
-			char tipo[20];
-			scanf(" %[^\n]", tipo);
-			listaUtil = imprimeCat(tipo);
-			if (tamLista(listaUtil) != 0){
-			char aux[3];
-			printf("\e[34;1;1mdeseja remover categoria? s/n\e[m\n");
-			scanf(" %s", aux);
-			if (strcmp(aux, "s") == 0)
-			{
-				removeCat(listaUtil, T);
-			}}
-			break;
+      ///falta remocao
+      case 4:
+      printf("\e[34;1;1minsira a categoria desejada\e[m\n");
+      char tipo[20];
+      scanf(" %[^\n]", tipo);
+      listaUtil = imprimeCat(tipo);
+      if(tamLista(listaUtil)!=0){char aux[3];
+        printf("\e[34;1;1mdeseja remover categoria? s/n\e[m\n");
+        scanf(" %s", aux);
+        if(strcmp(aux, "s") == 0){
+          removeCat(listaUtil, T);
+        }}
+      else printf("\e[34;1;1mcategoria nao encontrada \e[m\n");
+      break;
 
-		///case 5 completo
-		case 5:
-			util = completo(NULL, T);
-			imprime(util, 0);
-			libera(util);
+      ///case 5 completo
+      case 5:
+      util = completo(NULL, T);
+      imprime(util, 0);
+      libera(util);
 
-			break;
+      break;
 
-		///case 6 completo
-		case 6:
-			imprimeArq();
-			break;
+      ///case 6 completo
+      case 6:
+      imprimeArq();
+      break;
 
-		/*case 7:
-     	printf("\e[34;1;1minsira o nome do arquivo para merge\e[m\n");
-      	char nome[100];
-      	scanf(" %[^\n]", nome);
-      	merge(nome, T);
-      	break;*/
+      case 7:
+      printf("\e[34;1;1minsira o nome do arquivo para merge\e[m\n");
+      char nome[100];
+      scanf(" %[^\n]", nome);
+      merge(nome, T);
+      break;
 
-		///case 1000 completo
-		case 1000:
-			util = geraArv(T, NULL);
+      case 8:
+      imprimefp2();
+
+      ///case 1000 completo
+      case 1000:
+      util = geraArv(T, NULL);
 			paraArq(NULL,util,T);
 			libera(util);
 			break;
 
-		///case 1111 completo
-		case 1111:
-			util = geraArvArq(T);
-			paraArq(NULL, util, T);
-			libera(util);
-			break;
-		}
-	}
-	return 0;
+
+      ///case 1111 completo
+      case 1111:
+      util = geraArvArq(T);
+      paraArq(NULL,util,T);
+      libera(util);
+      break;
+    }
+  }
+  return 0;
 }
