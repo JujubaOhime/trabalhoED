@@ -268,7 +268,7 @@ TABM *remover(TABM *arv, int ch, int t)
 				if (y->folha){
 					for (j = 0; j < t - 1; j++)
 					{
-						z->chave[t + j] = y->chave[j]; //passar filho[i+1] para filho[i]
+						z->chave[t -1 + j] = y->chave[j]; //passar filho[i+1] para filho[i]
 						z->nchaves++;
 					}
 					arv->nchaves--;
