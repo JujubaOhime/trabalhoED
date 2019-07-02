@@ -1,3 +1,6 @@
+#ifndef TLSE_H
+#define TLSE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,3 +16,6 @@ TLSE* retiral(TLSE *l, int elem);
 TLSE* buscal(TLSE *l, int elem);
 int buscaIndice(TLSE *l, int indice);
 int tamLista(TLSE *l);
+
+
+#endif

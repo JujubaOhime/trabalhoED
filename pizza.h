@@ -1,3 +1,6 @@
+#ifndef PIZZA_H
+#define PIZZA_H
+
 #include <stdio.h>
 
 typedef struct pizza {
@@ -27,3 +30,5 @@ int cmp_pizza(TPizza *p1, TPizza *p2);
 
 // Retorna tamanho do registro que representa a pizza em bytes
 int tamanho_pizza_bytes();
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef BM_H
+#define BM_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "pizza.h"
@@ -17,3 +20,5 @@ TABM *divisao(TABM *x, int i, TABM* y, int t);
 TABM *insere_nao_completo(TABM *x, TPizza *p, int t);
 TABM *insere(TABM *T, TPizza *p, int t);
 TABM *remover(TABM *arv, int ch, int t);
+
+#endif
