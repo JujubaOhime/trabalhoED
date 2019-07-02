@@ -47,7 +47,6 @@ int main(void)
     printf("\e[34;1;1mT atual -> %d\e[m\n", T);
     printf("\e[34;1;1minsira: \e[m\n");
     printf("\e[33;1m1\e[m -> mudar o T\n\e[33;1m2\e[m -> adicionar ou atualizar pizza\n\e[33;1m3\e[m -> buscar ou remover elemento\n\e[33;1m4\e[m -> buscar ou remover categoria\n\e[33;1m5\e[m -> imprimir arvore\n\e[33;1m6\e[m -> imprimir catalogo\n\e[33;1m\e[33;1m7\e[m -> merge com outro arquivo\n\e[33;1m1000\e[m -> resetar catalogo e arvore\n\e[33;1m1111\e[m -> resetar somente arvore\n\e[33;1m-9\e[m -> para encerrar\n");
-
     scanf("%d", &resposta);
     switch (resposta)
     {
